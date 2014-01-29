@@ -30,6 +30,7 @@
     "throws",
     "Syn",
     "_selectonic",
-    "_Utils"
+    "_Utils",
+    'SuperOptions'
   ]
 }

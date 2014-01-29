@@ -21,18 +21,23 @@
     return target;
   };
 
+  Options.checkType = function(val, schema) {
+    var type = typeof val, isNullable = val === null && schema.nullable;
+    return ( schema.type instanceof Array ) ? schema.type.indexOf( type ) >= 0 || isNullable : type === schema.type || isNullable;
+  };
+
   Options.prototype.set = function( obj, isNew ) {
     var schema = this._schema,
     newOptions = {},
     defaults = {},
-    option, callback, _ref;
+    option, callback;
     obj = obj || {};
 
     // Check options
     for ( option in obj ) {
       var val = obj[ option ],
       defOption = schema[ option ],
-      isSameType = typeof val === defOption.type || (val === null && defOption.nullable);
+      isSameType = Options.checkType( val, defOption );
 
       if ( defOption !== void 0 ) {
         // unchangeable
@@ -41,7 +46,9 @@
         }
         // wrong type
         if ( !isSameType ) {
-          var msg = 'Option \"' + option + '\" must be ' + defOption.type + (defOption.nullable ? ' or null.' : '.');
+          var msg = 'Option \"' + option + '\" must be ' +
+            ( defOption.type instanceof Array ? defOption.type.join(', ') : defOption.type ) +
+            ( defOption.nullable ? ' or null.' : '.' );
           throw new TypeError( msg );
         }
         // out of values

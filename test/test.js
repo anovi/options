@@ -15,6 +15,7 @@
     optionNullable:  { default: 123,       type: 'number', nullable:     true          },
     optionFirstTime: { default: 'notouch', type: 'string', unchangeable: true          },
     noDefault:       { type: 'string' },
+    twoTypes:        { type: ['boolean', 'string'] }
   };
 
 
@@ -127,6 +128,21 @@
 
     options.set( {optionValues: '1'} );
     options.set( {noDefault: '2'} );
+  });
+
+  test( 'two types', 3, function() {
+    var options = new Options( scheme );
+    options.set( {twoTypes: 'super'} );
+    ok( options.get('twoTypes') === 'super', 'string setted' );
+
+    options.set( {twoTypes: false} );
+    ok( options.get('twoTypes') === false, 'boolean setted' );
+
+    try {
+      options.set( {twoTypes: 123} );
+    } catch (err) {
+      ok( err instanceof TypeError, 'Error' );
+    }
   });
 
 }( SuperOptions ));
