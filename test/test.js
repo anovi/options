@@ -81,13 +81,23 @@
     }
   });
 
-  test( 'Set unchangeable', 1, function() {
+  test( 'Set unchangeable first time', 1, function() {
+    var options = new Options( scheme, {optionFirstTime: 'horay'} );
+    ok( options.get('optionFirstTime') === 'horay', 'One time option setted!' )
+  });
+
+  test( 'Set unchangeable after init', 1, function() {
     var options = new Options( scheme );
     try {
       options.set( {optionFirstTime: 'asdfasdf'} );
     } catch (err) {
       ok( err instanceof Error, 'Error' );
     }
+  });
+
+  test( 'default unchangeable', 1, function() {
+    var options = new Options( scheme );
+    ok( options.get('optionFirstTime') === 'notouch', 'First time setted' );
   });
 
   test( 'Set out of values', 2, function() {
@@ -118,12 +128,14 @@
     var options = new Options( scheme ), res = [];
     options.on( 'optionValues', function( option ) {
       res.push( option );
+      return option;
     });
     options.on( 'noDefault', function( option ) {
       res.push( option );
       ok( res[0] === '1' );
       ok( res[1] === '2' );
       start();
+      return option;
     });
 
     options.set( {optionValues: '1'} );
@@ -143,6 +155,12 @@
     } catch (err) {
       ok( err instanceof TypeError, 'Error' );
     }
+  });
+
+  test( 'unknown option', 1, function() {
+    var options = new Options( scheme );
+    options.set( {superNewOption: true} );
+    ok( options.get( 'superNewOption' ) === true, 'Unknown option setted' );
   });
 
 }( SuperOptions ));

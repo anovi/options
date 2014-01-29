@@ -28,7 +28,7 @@
 
   Options.prototype.set = function( obj, isNew ) {
     var schema = this._schema,
-    newOptions = {},
+    newOptions = isNew ? {} : this.get(),
     defaults = {},
     option, callback;
     obj = obj || {};
@@ -36,8 +36,7 @@
     // Check options
     for ( option in obj ) {
       var val = obj[ option ],
-      defOption = schema[ option ],
-      isSameType = Options.checkType( val, defOption );
+      defOption = schema[ option ];
 
       if ( defOption !== void 0 ) {
         // unchangeable
@@ -45,7 +44,7 @@
           throw new Error( 'Option \"' + option + '\" could be setted once at the begining.' );
         }
         // wrong type
-        if ( !isSameType ) {
+        if ( !Options.checkType(val, defOption) ) {
           var msg = 'Option \"' + option + '\" must be ' +
             ( defOption.type instanceof Array ? defOption.type.join(', ') : defOption.type ) +
             ( defOption.nullable ? ' or null.' : '.' );
@@ -58,14 +57,16 @@
       }
     }
     // Create new options object
-    for ( option in schema ) {
-      if ( schema[option].default !== void 0 ) { defaults[option] = schema[option].default; }
+    if ( isNew ) {
+      for ( option in schema ) {
+        if ( schema[option].default !== void 0 ) { defaults[option] = schema[option].default; }
+      }
     }
     newOptions = isNew ? Options.extend( newOptions, defaults, obj ) : Options.extend( newOptions, obj );
     // Callbacks
-    for ( option in newOptions ) {
+    for ( option in obj ) {
       if ( (callback = this._callbacks[option]) ) {
-        newOptions[option] = callback.call( this, newOptions[option] );
+        obj[option] = callback.call( this, obj[option] );
       }
     }
     this._options = newOptions;
