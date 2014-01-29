@@ -62,14 +62,14 @@
         if ( schema[option].default !== void 0 ) { defaults[option] = schema[option].default; }
       }
     }
-    newOptions = isNew ? Options.extend( newOptions, defaults, obj ) : Options.extend( newOptions, obj );
+    newOptions = isNew ? Options.extend( defaults, obj ) : obj;
     // Callbacks
     for ( option in obj ) {
       if ( (callback = this._callbacks[option]) ) {
         obj[option] = callback.call( this, obj[option] );
       }
     }
-    this._options = newOptions;
+    this._options = Options.extend( this._options, newOptions );
   };
 
   Options.prototype.get = function( opt ) {
