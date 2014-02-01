@@ -38,7 +38,7 @@
       var val = obj[ option ],
       defOption = schema[ option ];
 
-      if ( defOption !== void 0 ) {
+      if ( defOption !== undefined ) {
         // unchangeable
         if ( defOption.unchangeable && !isNew ) {
           throw new Error( 'Option \"' + option + '\" could be setted once at the begining.' );
@@ -59,7 +59,7 @@
     // Create new options object
     if ( isNew ) {
       for ( option in schema ) {
-        if ( schema[option].default !== void 0 ) { defaults[option] = schema[option].default; }
+        if ( schema[ option ]['default'] !== undefined ) { defaults[ option ] = schema[ option ]['default']; }
       }
     }
     newOptions = isNew ? Options.extend( defaults, obj ) : obj;

@@ -1,5 +1,23 @@
 (function( SuperOptions ) {
 
+  // For IE compatibility
+  if (typeof Array.prototype.indexOf === 'undefined') {
+    Array.prototype.indexOf = function (searchElement, fromIndex) {
+      if (!this) { throw new TypeError(); }
+      fromIndex = isNaN( fromIndex = +fromIndex ) ? 0 : fromIndex;
+
+      var length = this.length;
+      if ( length === 0 || fromIndex >= length ) { return -1; }
+      if ( fromIndex < 0 ) { fromIndex += length; }
+
+      while (fromIndex < length) {
+        if ( this[fromIndex] === searchElement ) { return fromIndex; }
+        ++fromIndex;
+      }
+      return -1;
+    };
+  }
+
   /*
   *
   * Helpers
@@ -9,13 +27,13 @@
   assert  = QUnit.assert,
   Options = SuperOptions,
   scheme  = {
-    optionBoolean:   { default: true,      type: 'boolean'                             },
-    optionString:    { default: 'test',    type: 'string'                              },
-    optionValues:    { default: '2',       type: 'string', values:       ['1','2','3'] },
-    optionNullable:  { default: 123,       type: 'number', nullable:     true          },
-    optionFirstTime: { default: 'notouch', type: 'string', unchangeable: true          },
-    noDefault:       { type: 'string' },
-    twoTypes:        { type: ['boolean', 'string'] }
+    optionBoolean:   { 'default': true,      'type': 'boolean'                               },
+    optionString:    { 'default': 'test',    'type': 'string'                                },
+    optionValues:    { 'default': '2',       'type': 'string', 'values':       ['1','2','3'] },
+    optionNullable:  { 'default': 123,       'type': 'number', 'nullable':     true          },
+    optionFirstTime: { 'default': 'notouch', 'type': 'string', 'unchangeable': true          },
+    noDefault:       { 'type'   : 'string'                                                   },
+    twoTypes:        { 'type'   : ['boolean', 'string']                                      }
   };
 
 
