@@ -10,6 +10,13 @@
     return this;
   }
 
+  var itContains = function( array, elem ) {
+    if ( array instanceof Array && array.length > 0 && elem !== undefined ) {
+      for (var i = 0; i < array.length; i++) { if (elem === array[i]) {return true;} }
+    }
+    return false;
+  };
+
   Options.extend = function() {
     var target = arguments[0],
     args = Array.prototype.slice.call(arguments), source;
@@ -23,7 +30,7 @@
 
   Options.checkType = function(val, schema) {
     var type = typeof val, isNullable = val === null && schema.nullable;
-    return ( schema.type instanceof Array ) ? schema.type.indexOf( type ) >= 0 || isNullable : type === schema.type || isNullable;
+    return ( schema.type instanceof Array ) ? itContains(schema.type, type) || isNullable : type === schema.type || isNullable;
   };
 
   Options.prototype.set = function( obj, isNew ) {
@@ -51,7 +58,7 @@
           throw new TypeError( msg );
         }
         // out of values
-        if ( defOption.values && defOption.values.indexOf(val) < 0 ) {
+        if ( defOption.values && !itContains(defOption.values, val) ) {
           throw new RangeError( 'Option \"' + option + '\" only could be in these values: \"' + defOption.values.join('\", \"') + '\".' );
         }
       }
